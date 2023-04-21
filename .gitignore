@@ -164,3 +164,9 @@ Cargo.lock
 *.pdb
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,rust,goland
+/.idea/git_toolbox_prj.xml
+/.idea/modules.xml
+/.idea/ruststudy.iml
+/.idea/vcs.xml
+/main
+/.idea/.gitignore
