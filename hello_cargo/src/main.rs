@@ -36,4 +36,24 @@ fn main() {
     //Slices always borrow from another object. In this example, a has to remain ‘alive’ (in scope) for at least as long as our slice.
     //
     //The question about modifying a[3] can spark an interesting discussion, but the answer is that for memory safety reasons you cannot do it through a after you created a slice, but you can read the data from both a and s safely. More details will be explained in the borrow checker section.
+
+    let mut ret = Rectangle { width: 10, height: 15 };
+    println!("old area: {}", ret.area());
+    ret.inc_width(5);
+    println!("new area: {}", ret.area());
+}
+
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+impl Rectangle {
+    fn area(&self) -> u32 {
+        self.width * self.height
+    }
+
+    fn inc_width(&mut self, delta: u32) {
+        self.width += delta;
+    }
 }
