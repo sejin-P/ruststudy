@@ -41,6 +41,12 @@ fn main() {
     println!("old area: {}", ret.area());
     ret.inc_width(5);
     println!("new area: {}", ret.area());
+
+
+    // each function always takes a fixed number of parameters
+    // each function always takes a single set of parameters
+    // default values are not supported.
+    println!("coin toss: {}", pick_one("heads", "tails"));
 }
 
 struct Rectangle {
@@ -57,3 +63,9 @@ impl Rectangle {
         self.width += delta;
     }
 }
+
+fn pick_one<T>(a: T, b: T) -> T {
+    if std::process::id() % 2 == 0 { a } else { b }
+}
+
+
