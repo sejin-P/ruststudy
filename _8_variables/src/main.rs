@@ -30,5 +30,32 @@ fn main() {
 
     let vvv = v.iter().collect::<std::collections::HashSet<&(i32, bool)>>();
     println!("vvv: {vvv:?}");
-    println!("{}", type_of(&vvv))
+    println!("{}", type_of(&vvv));
+
+
+
+
+
+
+
+
+
+    let a = 10;
+    println!("before: {a}");
+
+    {
+        let a = "hello";
+        println!("inner scope: {a}");
+
+        let a = true;
+        println!("shadowed in inner scope: {a}");
+    }
+
+    println!("after: {a}");
+
+    // The following code demonstrates why the compiler can’t simply reuse memory locations when shadowing an immutable variable in a scope, even if the type does not change.
+    let a = 1;
+    let b = &a;
+    let a = a + 1;
+    println!("{a} {b}");
 }
