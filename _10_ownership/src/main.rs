@@ -77,4 +77,33 @@ fn main() {
 
     let name = String::from("Alice");
     say_hello(name);
+
+
+
+
+
+
+
+
+
+    // 10.4 Copying and Cloning
+    // While move semantics are the default, certain types are copied by default.
+    let x = 42;
+    let y = x;
+    println!("x: {x}");
+    println!("y: {y}");
+
+    // derive is sufficient to say that this is a way to generate code in Rust at compile time. In this case the default implementations of Copy and Clone traits are generated.
+    #[derive(Copy, Clone, Debug)]
+    struct Point(i32, i32);
+
+    let p1 = Point(1, 2);
+    let p2 = p1;
+    println!("p1: {p1:?}");
+    println!("p2: {p2:?}");
+    // Copying and cloning are not the same thing.
+    // Copying refers to bitwise copies of memory regions and does not work on arbitrary objects.
+    // Copying does not allow for custom logic (unlike copy constructors in C++).
+    // Cloning is a more general operation and also allows for custom behavior by implementing the Clone trait.
+    // Copying does not work on types that implement the Drop trait.
 }
