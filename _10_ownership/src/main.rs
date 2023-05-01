@@ -29,4 +29,29 @@ fn main() {
     // println!("s1: {s1}");
 
 
+
+
+    // Before move to s2
+
+    // stack           heap
+    // s1
+    // ptr     -->     "Rust"
+    // len 4
+    // cap 4
+
+    // After move to s2
+
+    // stack           heap
+    // s1(inaccessible)
+    // ptr     ---->   "Rust"
+    // len 4     |
+    // cap 4     |
+    //           |
+    //           |
+    // s2        |
+    // ptr     ---
+    // len 4
+    // cap 4
+    let s1: String = String::from("Rust");
+    let s2: String = s1;
 }
