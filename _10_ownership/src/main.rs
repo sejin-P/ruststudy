@@ -106,4 +106,34 @@ fn main() {
     // Copying does not allow for custom logic (unlike copy constructors in C++).
     // Cloning is a more general operation and also allows for custom behavior by implementing the Clone trait.
     // Copying does not work on types that implement the Drop trait.
+
+
+
+
+
+
+
+
+
+
+
+    // 10.5 Borrowing
+    // Instead of transferring ownership when calling a function, you can let a function borrow the value:
+    #[derive(Debug)]
+    struct Point2(i32, i32);
+    fn add(p1: &Point2, p2: &Point2) -> Point2 {
+        let p = Point2(p1.0+p2.0, p1.1+p2.1);
+        println!("&p.0: {:p}", &p.0);
+        p
+    }
+
+    let p1 = Point2(1, 2);
+    let p2 = Point2(5, 6);
+    let p3 = add(&p1, &p2);
+    println!("&p3.0: {:p}", &p3.0);
+    println!("{p1:?} + {p2:?} = {p3:?}");
+    // The add function borrows two points and returns a new point.
+    // The caller retains ownership of the inputs.
+    // Demonstrate that the return from add is cheap because the compiler can eliminate the copy operation.
+    // The Rust compiler can do return value optimization (RVO).
 }
