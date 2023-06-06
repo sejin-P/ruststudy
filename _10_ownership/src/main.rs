@@ -165,4 +165,53 @@ fn main() {
     //The above code does not compile because a is borrowed as mutable (through c) and as immutable (through b) at the same time.
     // Move the println! statement for b before the scope that introduces c to make the code compile.
     // After that change, the compiler realizes that b is only ever used before the new mutable borrow of a through c. This is a feature of the borrow checker called “non-lexical lifetimes”.
+
+
+
+
+
+
+
+
+    // 10.7 Lifetimes in function calls
+    #[derive(Debug)]
+    struct Point3(i32, i32);
+
+    fn left_most<'a>(p1: &'a Point3, p2: &'a Point3) -> &'a Point3 {
+        if p1.0 < p2.0 { p1 } else { p2 }
+    }
+
+    let p1: Point3 = Point3(10, 10);
+    let p2: Point3 = Point3(20, 20);
+    let p3: &Point3 = left_most(&p1, &p2);
+    println!("left_most point: {:?}", p3);
+
+    // 'a is a generic parameter, it is inferred by the compiler.
+    // Lifetimes start with ' and 'a is a typical default name.
+    // Read &'a Point as “a borrowed Point which is valid for at least the lifetime a”.
+    // The at least part is important when parameters are in different scopes.
+
+    // chatgpt4 qna
+    // Q: Then if I assign p1 and p2 just in function call, I cannot use the return value?
+    //
+    // ChatGPT
+    // Yes, if you pass in references to Point3 objects that are created in the function call itself, then the returned reference from left_most will be dangling as soon as the function call ends because the objects will be dropped when the function call is over. This is because the lifetime of those objects is limited to the function call, and Rust's borrow checker will not allow you to keep references to them outside of that scope.
+    //
+    //     For example, this would cause a compile-time error:
+    //
+    //     rust
+    // Copy code
+    // let point = left_most(&Point3::new(...), &Point3::new(...));
+    // This will not compile because the temporary Point3 objects are dropped as soon as the left_most call is over, so point would be a dangling reference.
+    //
+    //     However, if you keep Point3 objects in a scope that outlives the usage of point, then it is okay. For example:
+    //
+    //     rust
+    // Copy code
+    // let p1 = Point3::new(...);
+    // let p2 = Point3::new(...);
+    // let point = left_most(&p1, &p2);
+    // In this case, p1 and p2 live at least as long as point, so there is no problem.
+
+
 }
