@@ -136,4 +136,33 @@ fn main() {
     // The caller retains ownership of the inputs.
     // Demonstrate that the return from add is cheap because the compiler can eliminate the copy operation.
     // The Rust compiler can do return value optimization (RVO).
+
+
+
+
+
+
+
+
+
+
+    // 10.5.1 Shared and Unique Borrows
+    // Constraints on borrowing
+    // You can have one or more &T values at any given time, or
+    // You can have exactly one &mut T value.
+
+    let mut a: i32 = 10;
+    let b: &i32 = &a;
+    // println!("b: {b}");
+
+    {
+        let c: &mut i32 = &mut a;
+        *c = 20;
+    }
+
+    println!("a: {a}");
+    // println!("b:  {b}");
+    //The above code does not compile because a is borrowed as mutable (through c) and as immutable (through b) at the same time.
+    // Move the println! statement for b before the scope that introduces c to make the code compile.
+    // After that change, the compiler realizes that b is only ever used before the new mutable borrow of a through c. This is a feature of the borrow checker called “non-lexical lifetimes”.
 }
