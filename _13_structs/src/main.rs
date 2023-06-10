@@ -52,4 +52,38 @@ fn main() {
 
     // let t = p;
     // println!("{}", p.0);
+
+
+
+
+
+
+
+
+
+
+
+
+    // 13.2 Filed shorthand syntax
+    #[derive(Debug)]
+    struct Person1 {
+        name: String,
+        age: u8,
+    }
+
+    impl Person1 {
+        fn new(name: String, age: u8) -> Self {
+            Person1 {name, age}
+        }
+
+        fn default() -> Self {
+            Person1 {
+                name: "bot".to_string(),
+                age: 0,
+            }
+        }
+    }
+
+    let peter = Person1::new(String::from("Peter"), 27);
+    println!("{peter:?}")
 }
