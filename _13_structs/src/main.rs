@@ -240,6 +240,7 @@ fn main() {
 
         println!("Bitwise representation of Option<&i32>");
         dbg_bits!(None::<&i32>, usize);
+        dbg_bits!(Some(&0), usize);
         dbg_bits!(Some(&0i32), usize);
     }
 
