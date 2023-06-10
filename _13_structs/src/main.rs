@@ -31,4 +31,25 @@ fn main() {
     // Zero-sized structs e.g., struct Foo; might be used when implementing a trait on some type but don’t have any data that you want to store in the value itself.
     // The next slide will introduce Tuple structs, used when the field names are not important.
     // The syntax ..peter allows us to copy the majority of the fields from the old struct without having to explicitly type it all out. It must always be the last element.
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // 13.1 Tuple Structs
+    struct Point(i32, i32);
+
+    let p = Point(1, 2);
+    println!("{}, {}", p.0, p.1);
+
+    // let t = p;
+    // println!("{}", p.0);
 }

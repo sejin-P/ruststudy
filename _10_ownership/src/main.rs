@@ -1,5 +1,7 @@
 struct Point(i32, i32);
 
+// 깨달은 것: copy가 구현되지 않은 type들은 다른 변수로 assign시 invalid해지는 것.
+
 fn main() {
     // 10.0 Ownership
     // All variable bindings have a scope where they are valid and it is an error to use a variable outside its scope
@@ -155,6 +157,7 @@ fn main() {
 
     let mut a: i32 = 10;
     let b: &i32 = &a;
+    println!("a: {a}");
     // println!("b: {b}");
 
     {
