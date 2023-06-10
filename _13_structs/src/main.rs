@@ -85,5 +85,28 @@ fn main() {
     }
 
     let peter = Person1::new(String::from("Peter"), 27);
-    println!("{peter:?}")
+    println!("{peter:?}");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // 14.0 Enums
+    #[derive(Debug)]
+    enum CoinFlip {
+        Heads,
+        Tails,
+    }
+
+    println!("you got: {:?}", CoinFlip::Heads);
 }
