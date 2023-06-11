@@ -37,4 +37,58 @@ fn main() {
     // mut self: same as above, but the method can mutate the object.
     // No receiver: this becomes a static method on the struct. Typically used to create constructors which are called new by convention.
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //15.2 Examples
+
+    #[derive(Debug)]
+    struct Race {
+        name: String,
+        laps: Vec<i32>,
+    }
+
+    impl Race {
+        fn new(name: &str) -> Self {
+            Race { name: String::from(name), laps: Vec::new() }
+        }
+
+        fn add_lap(&mut self, lap: i32) {
+            self.laps.push(lap);
+        }
+
+        fn print_laps(&self) {
+            println!("Recorded {} laps for {}:", self.laps.len(), self.name);
+            for (idx, lap) in self.laps.iter().enumerate() {
+                println!("Lap {idx}: {lap} sec");
+            }
+        }
+
+        fn finish(self) {
+            let total = self.laps.iter().sum::<i32>();
+            println!("Race {} is finished, total lap time: {}", self.name, total);
+        }
+    }
+
+    let mut race = Race::new("monaco grand pix");
+
+    race.add_lap(70);
+    race.add_lap(68);
+    race.print_laps();
+
+    race.add_lap(71);
+    race.print_laps();
+
+    race.finish();
 }
