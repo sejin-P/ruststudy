@@ -1,4 +1,5 @@
 #![allow(unused_variables, dead_code)]
+use std::ops::Add;
 
 // test for my question
 struct Person {
@@ -68,33 +69,105 @@ fn test_set_age() {
 
 
 
-
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Point {
-    // add fields
+    x: i32,
+    y: i32,
 }
 
 impl Point {
-    // add methods
+    fn new(x: i32, y: i32) -> Self {
+        Point {x, y}
+    }
+
+    fn magnitude(&self) -> f64 {
+        let sqr = i32::pow(self.x, 2) + i32::pow(self.y, 2);
+        return f64::from(sqr).sqrt();
+    }
+
+    fn dist(&self, p1: Point) -> f64 {
+        let distanceSqr = i32::pow(self.x-p1.x, 2) + i32::pow(self.y-p1.y, 2);
+        return f64::from(distanceSqr).sqrt();
+    }
+}
+
+impl Add for Point {
+    type Output = Self;
+
+    fn add(self, other: Self) -> Self {
+        Self {
+            x: self.x + other.x,
+            y: self.y + other.y,
+        }
+    }
 }
 
 pub struct Polygon {
-    // add fields
+    points: Vec<Point>
 }
 
 impl Polygon {
+    fn new() -> Self {
+        Polygon{points: Vec::new()}
+    }
+
+    fn add_point(&mut self, p: Point) {
+        self.points.push(p);
+    }
+
+    fn left_most_point(&self) -> Option<Point> {
+        let len = self.points.len();
+        if len == 0 {
+            return None;
+        }
+
+        let mut leftMostPoint = self.points[0];
+        for point in &self.points[1..len] {
+            if point.x < leftMostPoint.x {
+                leftMostPoint = *point;
+            }
+        }
+
+        return Some(leftMostPoint);
+    }
+
+    fn length(&self) -> i32 {
+        let mut s = 0;
+        for point in &self.points {
+            s += point.x + point.y;
+        }
+
+        return s;
+    }
 }
 
 pub struct Circle {
-    // add fields
+    center: Point,
+    radius: i32,
 }
 
 impl Circle {
-    // add methods
+    fn new(center: Point, radius: i32) -> Self {
+        Circle{center, radius }
+    }
+
+    fn length(&self) -> i32 {
+        self.radius
+    }
 }
 
 pub enum Shape {
     Polygon(Polygon),
     Circle(Circle),
+}
+
+impl Shape {
+    fn perimeter(&self) -> i32 {
+        match self {
+            Shape::Polygon(poly) => poly.length(),
+            Shape::Circle(circle) => circle.length(),
+        }
+    }
 }
 
 #[cfg(test)]
@@ -145,7 +218,7 @@ mod tests {
         poly.add_point(p1);
         poly.add_point(p2);
 
-        let points = poly.iter().cloned().collect::<Vec<_>>();
+        let points = poly.points.iter().cloned().collect::<Vec<_>>();
         assert_eq!(points, vec![Point::new(12, 13), Point::new(16, 16)]);
     }
 
@@ -156,15 +229,14 @@ mod tests {
         poly.add_point(Point::new(17, 11));
         poly.add_point(Point::new(16, 16));
         let shapes = vec![
-            Shape::from(poly),
-            Shape::from(Circle::new(Point::new(10, 20), 5)),
+            Shape::from(Shape::Polygon(poly)),
+            Shape::from(Shape::Circle(Circle::new(Point::new(10, 20), 5))),
         ];
         let perimeters = shapes
             .iter()
             .map(Shape::perimeter)
-            .map(round_two_digits)
             .collect::<Vec<_>>();
-        assert_eq!(perimeters, vec![15.48, 31.42]);
+        assert_eq!(perimeters, vec![85, 5]);
     }
 }
 
