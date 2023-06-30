@@ -69,4 +69,6 @@ fn main() {
     // Compare the different ways to index a String:
     // To a character by using s3.chars().nth(i).unwrap() where i is in-bound, out-of-bounds.
     // To a substring by using s3[0..4], where that slice is on character boundaries or not.
+    let s5 = &*s1;
+    println!("{}", s5);
 }
