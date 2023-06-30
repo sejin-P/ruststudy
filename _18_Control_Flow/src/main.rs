@@ -35,7 +35,7 @@ fn main() {
         println!("x: {x}");
     }
 
-    println!("v: {:?}", v);
+    // println!("v: {:?}", v);
 
 
 
