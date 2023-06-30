@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 fn main() {
     // Option and Result types: used for optional values and error handling.
 
@@ -112,4 +113,112 @@ fn main() {
     // vec![...] is a canonical macro to use instead of Vec::new() and it supports adding initial elements to the vector.
     // To index the vector you use [ ], but they will panic if out of bounds. Alternatively, using get will return an Option. The pop function will remove the last element.
     // Show iterating over a vector and mutating the value: for e in &mut v { *e += 50; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // 19.4 HashMap
+    let mut page_counts = HashMap::new();
+    page_counts.insert("Adventures of H f".to_string(), 207);
+    page_counts.insert("Grimm's ".to_string(), 751);
+    page_counts.insert("Pride".to_string(), 303);
+
+    if !page_counts.contains_key("Les") {
+        println!("We know about {} books, but not Les", page_counts.len());
+    }
+
+    for book in ["Adventures of H f", "Pride"] {
+        match page_counts.get(book) {
+            Some(count) => println!("{book}: {count} pages"),
+            None => println!("{book} is unknown")
+        }
+    }
+
+    // Use the .entry() method to insert  a value if nothing is found
+    for book in ["Pride", "Alice"] {
+        let page_count: &mut i32 = page_counts.entry(book.to_string()).or_insert(0);
+        *page_count += 1;
+    }
+
+    {
+        let a = "ABC";
+        page_counts.insert(a.to_string(), 12);
+    }
+
+    println!("{page_counts:#?}");
+
+    // HashMap is not defined in the prelude and needs to be brought into scope.
+
+    // Try the following lines of code. The first line will see if a book is in the hashmap and if not return an alternative value. The second line will insert the alternative value in the hashmap if the book is not found.
+
+    // let pc1 = page_counts
+    //     .get("Harry Potter and the Sorcerer's Stone ")
+    //     .unwrap_or(&336);
+    // let pc2 = page_counts
+    //     .entry("The Hunger Games".to_string())
+    //     .or_insert(374);
+    // Unlike vec!, there is unfortunately no standard hashmap! macro.
+
+    // Although, since Rust 1.56, HashMap implements From<[(K, V); N]>, which allows us to easily initialize a hash map from a literal array:
+
+    // let page_counts = HashMap::from([
+    //     ("Harry Potter and the Sorcerer's Stone".to_string(), 336),
+    //     ("The Hunger Games".to_string(), 374),
+    // ]);
+    // Alternatively HashMap can be built from any Iterator which yields key-value tuples.
+
+    // We are showing HashMap<String, i32>, and avoid using &str as key to make examples easier. Using references in collections can, of course, be done, but it can lead into complications with the borrow checker.
+
+    // Try removing to_string() from the example above and see if it still compiles. Where do you think we might run into issues?
+    // => 
+    let mut page_counts_with_String = HashMap::new();
+    page_counts_with_String.insert("Adventures of H f", 207);
+    page_counts_with_String.insert("Grimm's ", 751);
+    page_counts_with_String.insert("Pride", 303);
+
+    if !page_counts_with_String.contains_key("Les") {
+        println!("We know about {} books, but not Les", page_counts.len());
+    }
+
+    for book in ["Adventures of H f", "Pride"] {
+        match page_counts_with_String.get(book) {
+            Some(count) => println!("{book}: {count} pages"),
+            None => println!("{book} is unknown")
+        }
+    }
+
+    // Use the .entry() method to insert  a value if nothing is found
+    for book in ["Pride", "Alice"] {
+        let page_count: &mut i32 = page_counts_with_String.entry(book).or_insert(0);
+        *page_count += 1;
+    }
+
+    // {
+    //     let abc = String::from("ABC");
+    //     page_counts_with_String.insert(&abc, 12); => compile err!!!
+    // }
+
+    println!("ABC for {:?}", page_counts_with_String.get("ABC"));
+
+
+    println!("{page_counts:#?}");
 }
