@@ -249,4 +249,37 @@ fn main() {
     // A Box can be useful when you:
     // have a type whose size that can’t be known at compile time, but the Rust compiler wants to know an exact size.
     // want to transfer ownership of a large amount of data. To avoid copying large amounts of data on the stack, instead store the data on the heap in a Box so only the pointer is moved.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // 19.5.1 Box with Recursive Data Structures
+    #[derive(Debug)]
+    enum List<T> {
+        Cons(T, Box<List<T>>),
+        Nil,
+    }
+
+    let list: List<i32> = List::Cons(1, Box::new(List::Cons(2, Box::new(List::Nil))));
+    println!("{list:?}");
+
+    //  If the Box was not used here and we attempted to embed a List directly into the List, the compiler would not compute a fixed size of the struct in memory, it would look infinite.
+
+    // Box solves this problem as it has the same size as a regular pointer and just points at the next element of the List in the heap.
+
+    // Remove the Box in the List definition and show the compiler error. “Recursive with indirection” is a hint you might want to use a Box or reference of some kind, instead of storing a value directly.
+
+    
 }
