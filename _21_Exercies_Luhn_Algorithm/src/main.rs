@@ -8,15 +8,16 @@ pub fn luhn(cc_number: &str) -> bool {
             continue
         }
         let digit = ch.to_digit(10);
-        if digit.is_none() {
-            return false
-        }
-
-        if (i-totalBlankCnt)%2 == 1 {
-            let doubled = digit.unwrap()*2;
-            sumLuhn += doubled/10 + doubled%10;
-        } else {
-            sumLuhn += digit.unwrap();
+        match digit {
+            Some(d) => {
+                sumLuhn += if (i-totalBlankCnt) %2 == 1 {
+                    let doubled = d*2;
+                    doubled/10 + doubled%10
+                } else {
+                    d
+                }
+            }
+            None => return false
         }
     }
 
