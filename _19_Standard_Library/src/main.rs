@@ -332,6 +332,13 @@ fn main() {
 
     println!("a: {a}");
     println!("b: {b}");
+
+    fn say_something(s: Rc<String>) {
+        println!("{s}");
+    }
+    let mut c = Rc::new(String::from("a"));
+    say_something(c);
+    // println!("{c}");
     // If you need to mutate the data inside an Rc, you will need to wrap the data in a type such as Cell or RefCell.
     // See Arc if you are in a multi-threaded context.
     // You can downgrade a shared pointer into a Weak pointer to create cycles that will get dropped.
