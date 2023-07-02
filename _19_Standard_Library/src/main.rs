@@ -281,5 +281,23 @@ fn main() {
 
     // Remove the Box in the List definition and show the compiler error. “Recursive with indirection” is a hint you might want to use a Box or reference of some kind, instead of storing a value directly.
 
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // 19.5.2 Niche Optimization
+    // A Box cannot be empty, so the pointer is always valid and non-null. This allows the compiler to optimize the memory layout.
+
 }
