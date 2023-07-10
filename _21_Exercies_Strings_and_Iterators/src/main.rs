@@ -1,34 +1,14 @@
 pub fn prefix_matches(prefix: &str, request_path: &str) -> bool {
-    let mut wildcardIdx = 0;
-    let request_chars: Vec<char> = request_path.chars().collect();
-    let request_len = request_chars.len();
-    let mut i = 0;
-    for ch in prefix.chars() {
-        if request_len == i+wildcardIdx {
-            return false
+    let mut request_segments = request_path.split('/');
+
+    for prefix_segment in prefix.split('/') {
+        let Some(request_segment) = request_segments.next() else {
+            return false;
+        };
+
+        if request_segment != prefix_segment && prefix_segment != "*" {
+            return false;
         }
-        if ch == '*' {
-            while request_chars[i+wildcardIdx] != '/' {
-                wildcardIdx += 1;
-            }
-            wildcardIdx -= 1;
-            i += 1;
-            continue
-        }
-
-        if ch != request_chars[i+wildcardIdx] {
-            return false
-        }
-
-        i += 1;
-    }
-
-    if request_len == i+wildcardIdx {
-        return true
-    }
-
-    if request_chars[i+wildcardIdx] != '/' {
-        return false
     }
 
     return true
