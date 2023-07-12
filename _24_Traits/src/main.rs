@@ -91,4 +91,29 @@ fn main() {
     println!("{} {}", std::mem::size_of::<&Dog1>(), std::mem::size_of::<&Cat1>());
     println!("{}", std::mem::size_of::<&dyn Pet1>());
     println!("{}", std::mem::size_of::<Box<dyn Pet1>>());
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // 24.2 Deriving Traits
+    // You can let the compiler derive a number of traits:
+    #[derive(Debug, Clone, PartialEq, Eq, Default)]
+    struct Player {
+        name: String,
+        strength: u8,
+        hit_points: u8,
+    }
+
+    let p1 = Player::default();
+    let p2 = p1.clone();
+    println!("Is {:?}]]nequal to {:?}?\nThe answer is {}", &p1, &p2, if p1 == p2 {"yes"} else {"no"});
 }
