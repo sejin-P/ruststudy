@@ -116,4 +116,56 @@ fn main() {
     let p1 = Player::default();
     let p2 = p1.clone();
     println!("Is {:?}]]nequal to {:?}?\nThe answer is {}", &p1, &p2, if p1 == p2 {"yes"} else {"no"});
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // 24.3 Default Methods
+    // Traits can implement behavior in terms of other trait methods.
+
+    trait Equals {
+        fn equal(&self, other: &Self) -> bool;
+        fn not_equal(&self, other: &Self) -> bool {
+            !self.equal(other)
+        }
+    }
+
+    #[derive(Debug)]
+    struct Centimeter(i16);
+
+    impl Equals for Centimeter {
+        // implementation of equal -> automatically implemented not_equal
+        fn equal(&self, other: &Centimeter) -> bool {
+            self.0 == other.0
+        }
+    }
+
+    let a = Centimeter(10);
+    let b = Centimeter(20);
+
+    println!("{a:?} equals {b:?}: {}", a.equal(&b));
+    println!("{a:?} not_equals {b:?}: {}", a.not_equal(&b));
+
+    trait Equals1 {
+        fn equal(&self, other: &Self) -> bool;
+    }
+
+    trait NotEquals {
+        fn not_equal(&self, other: &Self) -> bool;
+    }
+
+    impl<T> NotEquals for T where T: Equals1 {
+        fn not_equal(&self, other: &Self) -> bool {
+            !self.equal(other)
+        }
+    }
 }
