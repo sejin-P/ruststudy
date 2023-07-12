@@ -168,4 +168,38 @@ fn main() {
             !self.equal(other)
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+    // 24.4 Trait Bounds
+    // When working with generics, you often want to require the types to implement some trait, so that you can call this trait’s methods.
+
+    // You can do this with T: Trait or impl Trait:
+
+    fn duplicate<T: Clone>(a: T) -> (T, T) {
+        (a.clone(), a.clone())
+    }
+
+
+    fn add_42_millions(x: impl Into<i32>) -> i32 {
+        x.into() + 42_000_000
+    }
+
+    let foo = String::from("foo");
+    let pair = duplicate(foo);
+
+    println!("{pair:?}");
+
+    let many = add_42_millions(42_i8);
+    println!("{many}");
+    let many_more = add_42_millions(10_000_000);
+    println!("{many_more}");
 }
