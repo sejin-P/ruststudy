@@ -122,4 +122,42 @@ fn main() {
     }
 
     wexe();
+
+
+
+
+
+
+
+
+
+
+
+    // 25.5 DROP
+    struct Droppable {
+        name: &'static str,
+    }
+
+    impl Drop for Droppable {
+        fn drop(&mut self) {
+            println!("Dropping {}", self.name);
+        }
+    }
+
+    let a = Droppable { name: "a" };
+    {
+        let b = Droppable { name: "a" };
+        {
+            let c = Droppable { name: "c" };
+            let d = Droppable { name: "d" };
+            println!("Exiting block B");
+        }
+        println!("Exiting block A");
+    }
+    drop(a);
+    // a.drop();
+    println!("Exiting main");
+
+    // Why doesn’t Drop::drop take self?
+    // Short-answer: If it did, std::mem::drop would be called at the end of the block, resulting in another call to Drop::drop, and a stack overflow!
 }
