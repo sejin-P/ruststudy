@@ -160,4 +160,54 @@ fn main() {
 
     // Why doesn’t Drop::drop take self?
     // Short-answer: If it did, std::mem::drop would be called at the end of the block, resulting in another call to Drop::drop, and a stack overflow!
+
+
+
+
+
+
+
+
+
+
+    // 25.6 The Default Trait
+    // Default trait produces a default value for a type
+
+    #[derive(Debug)]
+    struct Implemented(String);
+    
+    #[derive(Debug, Default)]
+    struct Derived {
+        x: u32,
+        y: String,
+        z: Implemented,
+    }
+
+    
+
+    impl Default for Implemented {
+        fn default() -> Self {
+            Self("John Smith".into())
+        }
+    }
+
+    let default_struct: Derived = Default::default();
+    println!("{default_struct:#?}");
+
+    let almost_default_struct = Derived {
+        y: "Y is set!".into(),
+        ..Default::default()
+    };
+
+    println!("{almost_default_struct:#?}");
+
+    let nothing: Option<Derived> = None;
+    println!("{:#?}", nothing.unwrap_or_default());
+
+    // It can be implemented directly or it can be derived via #[derive(Default)].
+    // A derived implementation will produce a value where all fields are set to their default values.
+    // This means all types in the struct must implement Default too.
+    // Standard Rust types often implement Default with reasonable values (e.g. 0, "", etc).
+    // The partial struct copy works nicely with default.
+    // Rust standard library is aware that types can implement Default and provides convenience methods that use it.
 }
