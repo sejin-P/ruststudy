@@ -260,7 +260,7 @@ fn main() {
     // Closures or lambda expressions have types which cannot be named. However, they implement special Fn, FnMut, and FnOnce traits
     fn apply_with_log(func: impl FnOnce(i32) -> i32, input: i32) -> i32 {
         println!("Calling function on {input}");
-        func(input);
+        func(input)
     }
 
     let add_3 = |x| x + 3;
