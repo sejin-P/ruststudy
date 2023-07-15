@@ -210,4 +210,45 @@ fn main() {
     // Standard Rust types often implement Default with reasonable values (e.g. 0, "", etc).
     // The partial struct copy works nicely with default.
     // Rust standard library is aware that types can implement Default and provides convenience methods that use it.
+
+
+
+
+
+
+
+
+    // 25.7 Add, Mul, ...
+    // NOTE: if there aren't copy and clone, operations below can't be executed because memory dropped.
+    #[derive(Debug, Copy, Clone)]
+    struct Point { x: i32, y: i32 }
+
+    impl std::ops::Add for Point {
+        type Output = Self;
+        fn add(self, other: Self) -> Self {
+            Self { x: self.x + other.x, y: self.y + other.y }
+        }
+    }
+
+    let p1 = Point { x: 10, y: 20 };
+    let p2 = Point { x: 100, y: 200 };
+    println!("{:?} + {:?} = {:?}", p1, p2, p1+p2);
+    println!("{:?}", p1);
+
+    // You could implement Add for &Point. In which situations is that useful?
+    // Answer: Add:add consumes self. If type T for which you are overloading the operator is not Copy, you should consider overloading the operator for &T as well. This avoids unnecessary cloning on the call site.
+    // Why is Output an associated type? Could it be made a type parameter of the method?
+    // Short answer: Function type parameters are controlled by the caller, but associated types (like Output) are controlled by the implementor of a trait.
+    // You could implement Add for two different types, e.g. impl Add<(i32, i32)> for Point would add a tuple to a Point.
+
+
+
+
+
+
+
+
+
+
+    
 }
