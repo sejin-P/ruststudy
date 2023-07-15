@@ -260,7 +260,7 @@ fn main() {
     // Closures or lambda expressions have types which cannot be named. However, they implement special Fn, FnMut, and FnOnce traits
     fn apply_with_log(func: impl FnOnce(i32) -> i32, input: i32) -> i32 {
         println!("Calling function on {input}");
-        func(input)
+        func(input);
     }
 
     let add_3 = |x| x + 3;
@@ -277,4 +277,16 @@ fn main() {
 
     let multiply_sum = |x| x * v.into_iter().sum::<i32>();
     println!("multiply_sum: {}", apply_with_log(multiply_sum, 3));
+
+    // An Fn (e.g. add_3) neither consumes nor mutates captured values, or perhaps captures nothing at all. It can be called multiple times concurrently.
+
+    // An FnMut (e.g. accumulate) might mutate captured values. You can call it multiple times, but not concurrently.
+
+    // If you have an FnOnce (e.g. multiply_sum), you may only call it once. It might consume captured values.
+
+    // FnMut is a subtype of FnOnce. Fn is a subtype of FnMut and FnOnce. I.e. you can use an FnMut wherever an FnOnce is called for, and you can use an Fn wherever an FnMut or FnOnce is called for.
+
+    // The compiler also infers Copy (e.g. for add_3) and Clone (e.g. multiply_sum), depending on what the closure captures.
+
+    // By default, closures will capture by reference if they can. The move keyword makes them capture by value.
 }
