@@ -13,6 +13,7 @@ fn main() {
     
 
     // 27.1.1 Catching and Stack Unwinding
+    // By default, a panic will cause the stack to unwind. The unwinding can be caught:
     let result = panic::catch_unwind(|| {
         println!("hello");
     });
