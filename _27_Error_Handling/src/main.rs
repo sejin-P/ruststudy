@@ -4,6 +4,8 @@ use std::fmt::{self, Display, Formatter};
 use std::fs::{self, File};
 use std::io::{self, Read};
 use thiserror::Error;
+use anyhow;
+use anyhow::{bail, Context};
 
 fn main() {
     // 27.1 Panics
@@ -222,7 +224,7 @@ fn main() {
 
 
 
-    // 27.4 Dynamic Error Types
+    // 27.3.3 Dynamic Error Types
     // Sometimes we want to allow any type of error to be returned without writing our own enum covering all the different possibilities.
     // std::error::Error makes this easy.
     #[derive(Clone, Debug, Eq, Error, PartialEq)]
@@ -242,5 +244,32 @@ fn main() {
     match read_username3("config.dat") {
         Ok(username) => println!("Username: {username}"),
         Err(err) => println!("Error: {err}"),
+    }
+
+
+
+
+    println!("27.3.4");
+
+
+    // 27.3.4 Adding Context to Errors
+    // The widely used `anyhow` crate can help you add contextual information to your errors and allows you to have fewer custom error types:
+
+    fn read_username4(path: &str) -> anyhow::Result<String> {
+        let mut username = String::with_capacity(100);
+        File::open(path)
+            .with_context(|| format!("Failed to open {path}"))?
+            .read_to_string(&mut username)
+            .context("Failed to read")?;
+
+        if username.is_empty() {
+            bail!("Found no username in {path}");
+        }
+        Ok(username)
+    }
+
+    match read_username4("config.dat") {
+        Ok(username) => println!("Username: {username}"),
+        Err(err) => println!("Error: {err:?}")
     }
 }
