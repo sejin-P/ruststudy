@@ -209,4 +209,38 @@ fn main() {
     // It also works for structs.
     //
     // It doesn’t affect your public API, which makes it good for libraries.
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // 27.4 Dynamic Error Types
+    // Sometimes we want to allow any type of error to be returned without writing our own enum covering all the different possibilities.
+    // std::error::Error makes this easy.
+    #[derive(Clone, Debug, Eq, Error, PartialEq)]
+    #[error("Found no username in {0}")]
+    struct EmptyUsernameError(String);
+
+    fn read_username3(path: &str) -> Result<String, Box<dyn Error>> {
+        let mut username = String::new();
+        File::open(path)?.read_to_string(&mut username)?;
+        if username.is_empty() {
+            return Err(EmptyUsernameError(String::from(path)).into());
+        }
+
+        Ok(username)
+    }
+
+    match read_username3("config.dat") {
+        Ok(username) => println!("Username: {username}"),
+        Err(err) => println!("Error: {err}"),
+    }
 }
