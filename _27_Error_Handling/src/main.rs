@@ -1,6 +1,8 @@
+use std::error::Error;
 use std::panic;
-use std::{fs, io};
-use std::io::Read;
+use std::fmt::{self, Display, Formatter};
+use std::fs::{self, File};
+use std::io::{self, Read};
 
 fn main() {
     // 27.1 Panics
@@ -107,4 +109,62 @@ fn main() {
 
     let username = read_username("config.dat");
     println!("username or err: {username:?}");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // 27.3.1.1 Converting Errot Types - Example
+    #[derive(Debug)]
+    enum ReadUsernameError {
+        IoError(io::Error),
+        EmptyUsername(String),
+    }
+
+    impl Error for ReadUsernameError {}
+
+    impl Display for ReadUsernameError {
+        fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+            match self {
+                Self::IoError(e) => write!(f, "Io error: {e}"),
+                Self::EmptyUsername(filename) => write!(f, "Found no username in {filename}")
+            }
+        }
+    }
+
+    impl From<io::Error> for ReadUsernameError {
+        fn from(err: io::Error) -> ReadUsernameError {
+            ReadUsernameError::IoError(err)
+        }
+    }
+
+    fn read_username1(path: &str) -> Result<String, ReadUsernameError> {
+        let mut username = String::with_capacity(100);
+        File::open(path)?.read_to_string(&mut username)?;
+        if username.is_empty() {
+            return Err(ReadUsernameError::EmptyUsername(String::from(path)));
+        }
+        Ok(username)
+    }
+    let username = read_username1("config.dat");
+    println!("username or error: {username:?}");
+
+    // Key points:
+
+    // The username variable can be either Ok(string) or Err(error).
+    // Use the fs::write call to test out the different scenarios: no file, empty file, file with username.
+    // It is good practice for all error types to implement std::error::Error, which requires Debug and Display. It’s generally helpful for them to implement Clone and Eq too where possible, to make life easier for tests and consumers of your library. In this case we can’t easily do so, because io::Error doesn’t implement them.
+
+
+
+    
 }
