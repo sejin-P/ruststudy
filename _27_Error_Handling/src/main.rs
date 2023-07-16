@@ -1,5 +1,5 @@
 use std::panic;
-use std::fs;
+use std::{fs, io};
 use std::io::Read;
 
 fn main() {
@@ -60,4 +60,51 @@ fn main() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // 27.3 Propagating Errors with `?`
+
+    // The try-operator ? is used to return errors to the caller. It lets you turn the common
+    // match some_expression {
+    //     Ok(value) => value,
+    //     Err(err) =? return Err(err),
+    // }
+
+    // into the much simpler
+    // some_expression?
+
+
+    fn read_username(path: &str) -> Result<String, io::Error> {
+        let username_file_result = fs::File::open(path);
+        let mut uesrname_file = match username_file_result {
+            Ok(file) => file,
+            Err(err) => return Err(err),
+        };
+
+        let mut username = String::new();
+        match uesrname_file.read_to_string(&mut username) {
+            Ok(_) => Ok(username),
+            Err(err) => Err(err),
+        }
+    }
+
+    let username = read_username("config.dat");
+    println!("username or err: {username:?}");
 }
