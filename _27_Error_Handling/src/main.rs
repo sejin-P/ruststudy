@@ -3,6 +3,7 @@ use std::panic;
 use std::fmt::{self, Display, Formatter};
 use std::fs::{self, File};
 use std::io::{self, Read};
+use thiserror::Error;
 
 fn main() {
     // 27.1 Panics
@@ -162,9 +163,50 @@ fn main() {
 
     // The username variable can be either Ok(string) or Err(error).
     // Use the fs::write call to test out the different scenarios: no file, empty file, file with username.
-    // It is good practice for all error types to implement std::error::Error, which requires Debug and Display. It’s generally helpful for them to implement Clone and Eq too where possible, to make life easier for tests and consumers of your library. In this case we can’t easily do so, because io::Error doesn’t implement them.
+    // It is good practice for all error types to implement std::error::Error, which requires Debug and Display.
+    // It’s generally helpful for them to implement Clone and Eq too where possible, to make life easier for tests and consumers of your library.
+    // In this case we can’t easily do so, because io::Error doesn’t implement them.
 
 
 
-    
+
+
+
+
+
+
+
+
+
+
+
+    // 27.3.2 Deriving Error Enums
+    // The `thiserror` crate is a popular way to create an error enum like we did on the previous page
+    #[derive(Debug, Error)]
+    enum ReadUsernameError1 {
+        #[error("Could not read: {0}")]
+        IoError(#[from] io::Error),
+        #[error("Found no username in {0}")]
+        EmptyUsername(String),
+    }
+
+    fn read_username2(path: &str) -> Result<String, ReadUsernameError1> {
+        let mut username = String::new();
+        File::open(path)?.read_to_string(&mut username)?;
+        if username.is_empty() {
+            return Err(ReadUsernameError1::EmptyUsername(String::from(path)));
+        }
+        Ok(username)
+    }
+
+    match read_username2("config.dat") {
+        Ok(username) => println!("Username: {username}"),
+        Err(err) => println!("Error: {err}"),
+    }
+
+    // thiserror’s derive macro automatically implements std::error::Error,
+    // and optionally Display (if the #[error(...)] attributes are provided) and From (if the #[from] attribute is added).
+    // It also works for structs.
+    //
+    // It doesn’t affect your public API, which makes it good for libraries.
 }
