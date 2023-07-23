@@ -115,9 +115,36 @@ fn main() {
     println!("char count: {}", count_chars(unsafe { emojis.get_unchecked(0..7) }));
 
     // Not upholding the UTF-8 encoding requirement breaks memory safety!
-    println!("emoji: {}", unsafe { emojis.get_unchecked(0..3) });
-    println!("char count: {}", count_chars(unsafe { emojis.get_unchecked(0..3) }));
+    // println!("emoji: {}", unsafe { emojis.get_unchecked(0..3) });
+    // println!("char count: {}", count_chars(unsafe { emojis.get_unchecked(0..3) }));
 
 
 
+
+
+
+
+
+
+
+
+
+    // 29.4.1 Writing Unsafe Functions
+    // You can mark your own functions as `unsafe` if they require particular conditions to avoid
+    // undefined behavior.
+
+    unsafe fn swap(a: &mut u8, b: &mut u8) {
+        let temp = *a;
+        *a = *b;
+        *b = temp;
+    }
+
+    let mut a = 42;
+    let mut b = 66;
+
+    unsafe {
+        swap(&mut a, &mut b);
+    }
+
+    println!("a = {}, b = {}", a, b);
 }
