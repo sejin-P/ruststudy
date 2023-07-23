@@ -150,4 +150,38 @@ fn main() {
     // Calling send will block the current thread until there is space in the channel for the new message. The thread can be blocked indefinitely if there is nobody who reads from the channel.
     // A call to send will abort with an error (that is why it returns Result) if the channel is closed. A channel is closed when the receiver is dropped.
     // A bounded channel with a size of zero is called a “rendezvous channel”. Every send will block the current thread until another thread calls read.
+
+
+
+
+
+
+
+
+
+
+
+    // 49 Send and Sync
+    // How does Rust know to forbid shared access across thread? The answer is in two traits:
+    // `Send`: a type T is `Send` if it is safe to move a `T` across a thread boundary.
+    // `Sync`: a type T is `Sync` if it is safe to move a &T across a thread boundary.
+    // `Send` and `Sync` are unsafe traits. The compiler will automatically derive them for your types
+    // as long as they only contain `Send` and `Sync` types. You can also implement them manually
+    // when you know it is valid.
+
+
+
+    // 49.1 Send
+    // The effect of moving ownership to another thread is that destructors will run in that thread.
+    // So the question is when you can allocate a value in one thread and deallocate it in another.
+    // As an example, a connection to the SQLite library must only be accessed from a single thread.
+
+    // 49.2 Sync
+    // T is `sync` if an only if &T is `Send`
+    // This statement is essentially a shorthand way of saying that if a type is thread-safe for shared use, it is also thread-safe to pass references of it across threads.
+    //
+    // This is because if a type is Sync it means that it can be shared across multiple threads without
+    // the risk of data races or other synchronization issues, so it is safe to move it to another thread.
+    // A reference to the type is also safe to move to another thread, because the data it references
+    // can be accessed from any thread safely.
 }
