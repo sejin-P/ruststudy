@@ -1,3 +1,4 @@
+use std::sync::mpsc;
 use std::thread;
 use std::thread::scope;
 use std::time::Duration;
@@ -60,4 +61,31 @@ fn main() {
     // guaranteed to be joined, so they can return borrowed data.
     // Normal Rust borrowing rules apply: you can either borrow mutably by one thread, or immutably
     // by any number of threads.
+
+
+
+
+
+
+
+    // 47.2 Channels
+    // Rust channels have two parts: a `Sender<T>` and a `Receiver<T>`. The two parts are connected
+    // via the channel, but you only see the end-points.
+
+    // it looks similar with golang chan.
+    let (tx, rx) = mpsc::channel();
+    tx.send(10).unwrap();
+    tx.send(20).unwrap();
+
+    println!("Received: {:?}", rx.recv());
+    println!("Received: {:?}", rx.recv());
+
+    let tx2 = tx.clone();
+    tx2.send(30).unwrap();
+    println!("Received: {:?}", rx.recv());
+
+    // `mpsc` stands for Multi-Producer, Single-Consumer. `Sender` and `SyncSender` implement
+    // Clone (so you can make multiple producers) but `Receiver` does not.
+    // `send()` and `recv()` return `Result`. If they return `Err`, it means the counterpart `Sender`
+    // or `Receiver` is dropped and the channel is closed.
 }
