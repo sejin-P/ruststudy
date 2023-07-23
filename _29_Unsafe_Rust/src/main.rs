@@ -39,4 +39,28 @@ fn main() {
     // In most cases the pointer must also be properly aligned.
 
 
+
+
+
+
+
+
+
+
+    // 29.2 Mutable Static Variables
+    // It is safe to read an immutable static variable:
+    static HELLO_WORLD: &str = "Hello World";
+    println!("HELLO_WORLD: {HELLO_WORLD}");
+
+    // However, since data races can occur, it is unsafe to read and write mutable static variables:
+    static mut COUNTER: u32 = 0;
+    fn add_to_counter(inc: u32) {
+        unsafe { COUNTER += inc;} // Potential Data race!
+    }
+
+    add_to_counter(42);
+    unsafe { println!("COUNTER: {COUNTER}"); } // Potential Data Race!
+
+    // Using a mutable static is generally a bad idea, but there are some cases where it might make sense
+    // in low-level `no_std` code, such as implementing a heap allocator or working with some C APIs.
 }
