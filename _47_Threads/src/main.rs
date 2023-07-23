@@ -184,4 +184,24 @@ fn main() {
     // the risk of data races or other synchronization issues, so it is safe to move it to another thread.
     // A reference to the type is also safe to move to another thread, because the data it references
     // can be accessed from any thread safely.
+
+
+
+
+
+
+
+
+
+
+
+
+    // 50 Shared State
+    // Rust uses the type system to enforce synchronization of shared data. This is primarily done
+    // via two types:
+
+    // `Arc<T>`, atomic reference counted T: handles sharing between threads and takes care to dealloc
+    // T when the last reference is dropped.
+
+    // `Mutex<T>`: ensures mutually exclusive access to the T value.
 }
