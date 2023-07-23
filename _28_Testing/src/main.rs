@@ -47,7 +47,22 @@ mod tests {
 
 
 
-//
+// 28.3 Documentation Tests
+// Rust has built-in support for documentation tests:
+
+// Code blocks in /// comments are automatically seen as Rust code.
+
+
+
+/// Shortens a string to the given length
+///
+/// ```
+/// assert_eq!(shorten_string("Hello World", 5), "Hello");
+/// assert_eq!(shorten_string("Hello World", 20), "Hello World");
+/// ```
+pub fn shorten_string(s: &str, length: usize) -> &str {
+    &s[..std::cmp::min(length, s.len())]
+}
 
 fn main() {
     println!("Hello, world!");
