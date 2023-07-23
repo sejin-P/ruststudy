@@ -147,4 +147,27 @@ fn main() {
     }
 
     println!("a = {}, b = {}", a, b);
+
+
+
+
+
+
+
+
+
+
+    // Functions from other languaes might violate the guarantees of Rust. Calling them is thus unsafe:
+    extern "C" {
+        fn abs(input: i32) -> i32;
+    }
+
+    unsafe {
+        // undefined behavior if abs misbehaves.
+        println!("Absolute value of -3 according to C: {}", abs(-3));
+    }
+
+    // This is usually only a problem for extern functions which do things with pointers which might
+    // violate Rust's memory model, but in general any C function might have undefined behavior under
+    // any arbitrary circumstances.
 }
