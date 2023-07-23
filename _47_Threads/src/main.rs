@@ -14,7 +14,7 @@ fn main() {
 
     for i in 1..5 {
         println!("Main thread: {i}");
-        thread::sleep(Duration::from_secs(5));
+        thread::sleep(Duration::from_secs(1));
     }
 
     // Threads are all daemon threads, the main thread does not wait for them.
@@ -68,7 +68,7 @@ fn main() {
 
 
 
-    // 47.2 Channels
+    // 48 Channels
     // Rust channels have two parts: a `Sender<T>` and a `Receiver<T>`. The two parts are connected
     // via the channel, but you only see the end-points.
 
@@ -88,4 +88,36 @@ fn main() {
     // Clone (so you can make multiple producers) but `Receiver` does not.
     // `send()` and `recv()` return `Result`. If they return `Err`, it means the counterpart `Sender`
     // or `Receiver` is dropped and the channel is closed.
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // 48.1 Unbounded Channels
+    // You get an unbounded and asynchronous channel with mpsc::channel();
+
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let thread_id = thread::current().id();
+        for i in 1..10 {
+            tx.send(format!("message {i}")).unwrap();
+            println!("{thread_id:?}: sent message {i}");
+        }
+        println!("{thread_id:?} done");
+    });
+
+    thread::sleep(Duration::from_millis(100));
+
+    for msg in rx.iter() {
+        println!("Main: got {msg}");
+    }
 }
