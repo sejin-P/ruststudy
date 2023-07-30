@@ -40,4 +40,26 @@ fn main() {
     // `.await` asynchronously waits for the completion of another operation. Unlike block_on,
     // `.await` doesn’t block the current thread.
     // .await can only be used inside an async function (or block; these are introduced later).
+
+
+
+
+
+
+
+
+
+
+    // 52.2 Futures
+    // Future is a trait, implemented by objects that represent an operation that may not be complete yet.
+    // A future can be polled, and poll returns a Poll.
+
+    // The .await keyword, applied to a Future, causes the current async function to pause until that
+    // Future is ready, and then evaluates to its output.
+
+    // Context와 Pin은 나중에 설명.
+    // Briefly:
+    // Context allows a Future to schedule itself to be polled again when an event occurs.
+    // Pin ensures that the Future isn't moved in memory, so that pointers into that future remain valid.
+    // This is required to allow references to remain valid after an .await.
 }
