@@ -1,11 +1,15 @@
+use std::io;
+use std::io::ErrorKind;
+use async_trait::async_trait;
 use tokio::sync::{mpsc, oneshot};
 use tokio::task::spawn;
 use tokio::time::{sleep, Duration};
+use tokio::io::{AsyncReadExt, AsyncWriteExt, DuplexStream};
 use futures::future::join_all;
 use std::time::Instant;
 
 
-#[tokio::main(flavor="current_thread")]
+#[tokio::main]
 async fn main() {
     // 54.1 Blocking the Executor
     // Most async runtimes only allow IO tasks to run concurrently. This means that CPU blocking tasks
@@ -93,4 +97,151 @@ async fn main() {
         let resp = do_work(&tx, i).await;
         println!("work result for iteration {i}: {resp}");
     }
+
+
+
+
+
+
+
+
+
+
+    // 54.3 Async Traits
+    // Async methods in traits are not yet supported in the stable channel.
+    // The crate async_trait provides a workaround through a macro:
+
+    #[async_trait]
+    trait Sleeper {
+        async fn sleep(&self);
+    }
+
+    struct FixedSleeper {
+        sleep_ms: u64,
+    }
+
+    #[async_trait]
+    impl Sleeper for FixedSleeper {
+        async fn sleep(&self) {
+            sleep(Duration::from_millis(self.sleep_ms)).await;
+        }
+    }
+
+    async fn run_all_sleepers_multiple_times(sleepers: Vec<Box<dyn Sleeper>>, n_times: usize) {
+        for _ in 0..n_times {
+            println!("running all sleepers..");
+            for sleeper in &sleepers {
+                let start = Instant::now();
+                sleeper.sleep().await;
+                println!("slept for {}ms", start.elapsed().as_millis());
+            }
+        }
+    }
+
+    let sleepers: Vec<Box<dyn Sleeper>> = vec![
+        Box::new(FixedSleeper { sleep_ms: 50}),
+        Box::new(FixedSleeper {sleep_ms: 100}),
+    ];
+    run_all_sleepers_multiple_times(sleepers, 5).await;
+
+    // async_trait is easy to use, but note that it’s using heap allocations to achieve this.
+    // This heap allocation has performance overhead.
+
+    // The challenges in language support for async trait are deep Rust and probably not worth
+    // describing in-depth. Niko Matskis did a good job of explaning them in [this post](https://smallcultfollowing.com/babysteps/blog/2019/10/26/async-fn-in-traits-are-hard/)
+    // if you are interested in diggin deeper.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // 54.5 Cancellation
+
+    // Dropping a future implies it can nver be polled again. This is called cancellation and it can
+    // occur at any await point. Care is needed to ensure the system works correctly even when futures
+    // are cancelled. For example, it shouldn't deadlock or lose data.
+
+    struct LinesReader {
+        stream: DuplexStream,
+    }
+
+    impl LinesReader {
+        fn new(stream: DuplexStream) -> Self {
+            Self { stream }
+        }
+
+        async fn next(&mut self) -> io::Result<Option<String>> {
+            let mut bytes = Vec::new();
+            let mut buf = [0];
+            while self.stream.read(&mut buf[..]).await? != 0 {
+                bytes.push(buf[0]);
+                if buf[0] == b'\n' {
+                    break;
+                }
+            }
+            if bytes.is_empty() {
+                return Ok(None)
+            }
+
+            let s = String::from_utf8(bytes)
+                .map_err(|_| io::Error::new(ErrorKind::InvalidData, "not UTF-8"))?;
+
+            Ok(Some(s))
+        }
+    }
+
+    async fn slow_copy(source: String, mut dest: DuplexStream) -> std::io::Result<()> {
+        for b in source.bytes() {
+            dest.write_u8(b).await?;
+            tokio::time::sleep(Duration::from_millis(10)).await
+        }
+        Ok(())
+    }
+    
+    async fn do_main() -> std::io::Result<()> {
+        let (client, server) = tokio::io::duplex(5);
+        let handle = tokio::spawn(slow_copy("hi\nthere\n".to_owned(), client));
+
+        let mut lines = LinesReader::new(server);
+        let mut interval = tokio::time::interval(Duration::from_millis(60));
+        loop {
+            tokio::select! {
+            _ = interval.tick() => println!("tick!"),
+            line = lines.next() => if let Some(l) = line? {
+                print!("{}", l)
+            } else {
+                break
+            },
+        }
+        }
+        handle.await.unwrap()?;
+        Ok(())
+    }
+    
+
+    do_main().await.expect("TODO: panic message");
+    // The comipler doesn't help with cancellation safety. You need to read API documentation and
+    // consider what state your async fn holds.
+
+    // Unlike panic and ?, cancellation is part of normal control flow (vs error-handling).
+
+
+    // LinesReader can be made cancellation-safe by makeing buf part of the struct:
+
+    // Interval::tick is cancellation-safe because it keeps track of whether a tick has been ‘delivered’.
+    //
+    // AsyncReadExt::read is cancellation-safe because it either returns or doesn’t read data.
+    //
+    // AsyncBufReadExt::read_line is similar to the example and isn’t cancellation-safe. See its documentation for details and alternatives.
 }
