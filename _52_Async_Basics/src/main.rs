@@ -62,4 +62,23 @@ fn main() {
     // Context allows a Future to schedule itself to be polled again when an event occurs.
     // Pin ensures that the Future isn't moved in memory, so that pointers into that future remain valid.
     // This is required to allow references to remain valid after an .await.
+
+
+
+
+
+
+
+    // 52.3 Runtimes
+    // A runtime provides support for performing operations asynchronously (a reactor) and is responsible
+    // for executing futures (an executor). Rust does not have a 'built-in' runtime, but several options
+    // are available.
+
+    // [Tokio](https://tokio.rs/): performant, with a well-developed ecosystem of functionality like
+    // [Hyper](https://hyper.rs/) for HTTP or [Tonic](https://github.com/hyperium/tonic) for gRPC.
+
+    // [async-std](https://async.rs/): aims to be a "std for async", and includes a basic runtime in
+    // async::task.
+
+    // [smol](https://docs.rs/smol/latest/smol/): simple and lightweight.
 }
