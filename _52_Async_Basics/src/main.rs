@@ -1,4 +1,5 @@
 use futures::executor::block_on;
+use tokio::time;
 
 async fn count_to(count: i32) {
     for i in 1..=count {
@@ -8,6 +9,13 @@ async fn count_to(count: i32) {
 
 async fn async_main(count: i32) {
     count_to(count).await;
+}
+
+async fn count_to_with_tokio(count: i32) {
+    for i in 1..=count {
+        println!("Count in task: {i}!");
+        time::sleep(time::Duration::from_millis(5)).await;
+    }
 }
 
 fn main() {
@@ -81,4 +89,37 @@ fn main() {
     // async::task.
 
     // [smol](https://docs.rs/smol/latest/smol/): simple and lightweight.
+
+
+
+
+
+    // 52.3.1 Tokio
+
+    // Tokio provides:
+
+    // A multi-threaded runtime for executing asynchronous code.
+    // An asynchronous version of the standard library.
+    // A large ecosystem of libraries.
+
+    // #[tokio::main]
+    // async fn main() {
+    //     tokio::spawn(count_to_with_tokio(10));
+    //
+    //     for i in 1..5 {
+    //         println!("Main task: {i}");
+    //         time::sleep(time::Duration::from_millis(5)).await;
+    //     }
+    // }
+
+
+
+
+
+
+
+
+
 }
+
+
